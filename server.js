@@ -1,4 +1,5 @@
-var PORT          = process.env.PORT || 3000;
+var PORT          = process.env.PORT || 80
+//var PORT          = process.env.PORT || 3000;
 
 var express       = require('express'),
     cors          = require('cors'),
@@ -19,7 +20,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 var MongoClient = mongodb.MongoClient;
 
 /* Connection url where your mongodb server is running. */
-var mongoUrl = 'mongodb://localhost:27017/notes';
+var mongoUrl = 'mongodb://heroku_8npb49rs:60kb260mr8jj6k1t94149u13ts@ds027175.mlab.com:27175/heroku_8npb49rs';
 
 /* welcome page */
 app.get('/', function(request, response){
@@ -90,6 +91,6 @@ app.post('/entries/new', function(request, response){
 }); // end add new
 
   /* tell our app where to listen */
-  app.listen(3000, function(){
+  app.listen(PORT, function(){
     console.log('listen to events on a "port".')
   });
