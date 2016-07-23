@@ -29,6 +29,7 @@ app.get('/', function(request, response){
   response.json({"description":"Welcome to the productivity app"});
 });
 
+/***********************Part 2 Notes Page ************************/
 /* see all */
 app.get('/entries', function(request, response){
   MongoClient.connect(mongoUrl, function (err, db) {
@@ -92,7 +93,79 @@ app.post('/entries/new', function(request, response){
   }); // end mongo connect
 }); // end add new
 
+/*************************Part 3 Weather ****************************/
+/* weather endpoint welcome page */
+app.get('/forecast', function(req, response) {
+  //sends to FE & displays at localhost:3000
+  response.json({"description" : "Open weather endpoint"});
+  console.log("Weather");
+}); //end welcome
+
+/* location search */
+app.post('/forecast/search', function(req, res){
+
+  /*full query to open weather
+  http://api.openweathermap.org/data/2.5/weather?zip=11228&APPID=
+  */
+
+  var baseUrl              = "http://api.openweathermap.org/data/2.5/weather";
+  var endpoint             = '?zip=';
+  var apiKeyQueryString    = '&APPID=';
+  var OPEN_WEATHER_API_KEY = process.env.OPEN_WEATHER_API_KEY;
+  var queryString          = req.body.queryString;
+  var fullQuery            = baseUrl + endpoint + queryString + apiKeyQueryString + OPEN_WEATHER_API_KEY;
+
+  console.log("fullQuery:", fullQuery); //prints to terminal
+
+  request({
+    url: fullQuery,
+    method: 'GET',
+    callback: function(error, response, body) {
+      res.send(body);
+    }// end callback fxn
+  }) //end request
+}); //end post
+
+/*************************Part 4 News ****************************/
+/* get logos of news sources*/
+app.get('/news', function(req, response) {
+  //sends to FE & displays at localhost:3000
+  response.json({"description" : "News endpoint"});
+  console.log("news");
+}); //end welcome
+
+/*full query to get sources/articles
+ https://newsapi.org/v1/sources?source=techcrunch&apiKey=
+
+ full query to get top headlines
+ https://newsapi.org/v1/articles?source=techcrunch&sortBy=top&apiKey=
+*/
+
+var baseSourcesUrl           = "https://newsapi.org/v1/sources"
+var baseArticlesUrl          = "https://newsapi.org/v1/articles";
+var sourcePoint              = '?source='
+var newsEndpoint             = '&sortBy=top';
+var apiKeyNewsQueryString    = '&apiKey=';
+var chosenSource             = req.body.chosenSource
+var NEWS_API_KEY             = process.env.NEWS_API_KEY;
+
+
+console.log("fullSourceQuery:", fullSourceQuery); //prints to terminal
+console.log("fullArticleQuery:", fullArticleQuery);
+
+app.get('/news/sources', function(req, response) {
+  var fullSourceQuery  = baseSourcesUrl + sourcePoint + chosenSource + apiKeyNewsQueryString + NEWS_API_KEY;
+
+
+} //end get for sources
+
+app.get('/news/sources', function(req, response){
+  var fullArticleQuery = baseArticlesUrl + sourcePoint + chosenSource + chosenSource + newsEndpoint = + apiKeyNewsQueryString + NEWS_API_KEY;
+
+}) //end get for articles
+
+
   /* tell our app where to listen */
-  app.listen(PORT, function(){
+  app.listen(PORT, function() {
     console.log('listen to events on a "port".')
   });
