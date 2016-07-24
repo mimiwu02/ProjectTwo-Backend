@@ -166,31 +166,25 @@ app.post('/forecast/search', function(req, res){
 }); //end post
 
 /*************************Part 4 News ****************************/
-/* get logos of news sources*/
 app.get('/news', function(req, response) {
   //sends to FE & displays at localhost:3000
   response.json({"description" : "News endpoint"});
   console.log("news");
 }); //end welcome
 
-/*full query to get sources/articles
- https://newsapi.org/v1/sources?source=techcrunch&apiKey=
-
- full query to get top headlines
+/* full query to get top headlines
  https://newsapi.org/v1/articles?source=techcrunch&sortBy=top&apiKey=
 */
 
-
-app.get('/news/sources', function(req, res) {
-  var sourceEndpoint           = "https://newsapi.org/v1/sources"
+/* get logos of news sources*/
+app.post('/news/articles', function(req, res) {
   var articlesEndpoint         = "https://newsapi.org/v1/articles";
-  var sourceQuery              = '?source='
+  var sourceQuery              = '?source=';
   var newsFilter               = '&sortBy=top';
   var apiKeyNewsQueryString    = '&apiKey=';
-  var queryString              = req.body.queryString
-  console.log(queryString)
+  var queryString              = req.body.queryString;
   var NEWS_API_KEY             = process.env.NEWS_API_KEY;
-  var fullSourceQuery  = sourceEndpoint + sourceQuery + queryString + apiKeyNewsQueryString + NEWS_API_KEY;
+  var fullSourceQuery          = articlesEndpoint + sourceQuery + queryString + newsFilter + apiKeyNewsQueryString + NEWS_API_KEY;
 
   console.log("fullSourceQuery:", fullSourceQuery); //prints to terminal
 
@@ -199,18 +193,9 @@ app.get('/news/sources', function(req, res) {
     method: 'GET',
     callback: function(error, response, body) {
       res.send(body);
-    }
+    } //end call back fxn
   }) //end request
-
-  // request({
-  //   url: articlesEndpoint + sourceQuery + queryString + newsFilter + apiKeyNewsQueryString + NEWS_API_KEY,
-  //   method: 'GET',
-  //   callback: function(error, response, body) {
-  //     res.send(body);
-  //   }
-  // })
-}); //end get for sources
-
+}); //end post for sources
 
 
 
