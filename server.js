@@ -23,6 +23,11 @@ var MongoClient = mongodb.MongoClient;
 var mongoUrl = 'mongodb://localhost:27017/notes';
 // var mongoUrl = 'mongodb://heroku_8npb49rs:60kb260mr8jj6k1t94149u13ts@ds027175.mlab.com:27175/heroku_8npb49rs'
 
+// // initiate Aylien
+// var textapi = new AYLIENTextAPI({
+//   application_id: process.env.AYLIEN_API_ID,
+//   application_key: process.env.AYLIEN_API_KEY
+// });
 
 /* welcome page */
 app.get('/', function(request, response){
@@ -176,7 +181,7 @@ app.get('/news', function(req, response) {
  https://newsapi.org/v1/articles?source=techcrunch&sortBy=top&apiKey=
 */
 
-/* get logos of news sources*/
+/* get articles from different news sources*/
 app.post('/news/articles', function(req, res) {
   var articlesEndpoint         = "https://newsapi.org/v1/articles";
   var sourceQuery              = '?source=';
