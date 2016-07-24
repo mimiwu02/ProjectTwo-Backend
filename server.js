@@ -188,6 +188,7 @@ app.get('/news/sources', function(req, res) {
   var newsFilter               = '&sortBy=top';
   var apiKeyNewsQueryString    = '&apiKey=';
   var queryString              = req.body.queryString
+  console.log(queryString)
   var NEWS_API_KEY             = process.env.NEWS_API_KEY;
   var fullSourceQuery  = sourceEndpoint + sourceQuery + queryString + apiKeyNewsQueryString + NEWS_API_KEY;
 
@@ -197,21 +198,17 @@ app.get('/news/sources', function(req, res) {
     url: fullSourceQuery,
     method: 'GET',
     callback: function(error, response, body) {
-      // console.log(body);
-      // console.log(response);
       res.send(body);
     }
   }) //end request
 
-  request({
-    url: articlesEndpoint + sourceQuery + queryString + newsFilter + apiKeyNewsQueryString + NEWS_API_KEY,
-    method: 'GET',
-    callback: function(error, response, body) {
-      // console.log(body);
-      // console.log(response);
-      res.send(body);
-    }
-  })
+  // request({
+  //   url: articlesEndpoint + sourceQuery + queryString + newsFilter + apiKeyNewsQueryString + NEWS_API_KEY,
+  //   method: 'GET',
+  //   callback: function(error, response, body) {
+  //     res.send(body);
+  //   }
+  // })
 }); //end get for sources
 
 
