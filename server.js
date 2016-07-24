@@ -93,6 +93,45 @@ app.post('/entries/new', function(request, response){
   }); // end mongo connect
 }); // end add new
 
+
+/* delete */
+app.delete('/entries/', function(request, response) {
+
+
+  MongoClient.connect(mongoUrl, function (err, db) {
+    var entriesCollection = db.collection('entries');
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. ERROR:', err);
+    } else {
+      // We are connected!
+      console.log('Deleting by name... ');
+
+      /* Delete */
+      entriesCollection.remove(request.params, function(err, numOfRemovedDocs) {
+        console.log("numOfRemovedDocs:", numOfRemovedDocs);
+        if(err) {
+          console.log("error!", err);
+        } else { // after deletion, retrieve list of all
+          entriesCollection.find().toArray(function (err, result) {
+            if (err) {
+              console.log("ERROR!", err);
+              response.json("error");
+            } else if (result.length) {
+              console.log('Found:', result);
+              response.json(result);
+            } else { //
+              console.log('No document(s) found with defined "find" criteria');
+              response.json("none found");
+            }
+            db.close(function() {
+              console.log( "database CLOSED");
+            }); //close db
+          }); //end entries
+        } //end else
+      }); //entries
+    } //end else
+  }); // end mongo connect
+}); // end delete
 /*************************Part 3 Weather ****************************/
 /* weather endpoint welcome page */
 app.get('/forecast', function(req, response) {
@@ -101,7 +140,7 @@ app.get('/forecast', function(req, response) {
   console.log("Weather");
 }); //end welcome
 
-/* location search */
+/* location search by zip*/
 app.post('/forecast/search', function(req, res){
 
   /*full query to open weather
@@ -141,28 +180,41 @@ app.get('/news', function(req, response) {
  https://newsapi.org/v1/articles?source=techcrunch&sortBy=top&apiKey=
 */
 
-var baseSourcesUrl           = "https://newsapi.org/v1/sources"
-var baseArticlesUrl          = "https://newsapi.org/v1/articles";
-var sourcePoint              = '?source='
-var newsEndpoint             = '&sortBy=top';
-var apiKeyNewsQueryString    = '&apiKey=';
-var chosenSource             = req.body.chosenSource
-var NEWS_API_KEY             = process.env.NEWS_API_KEY;
+
+app.get('/news/sources', function(req, res) {
+  var sourceEndpoint           = "https://newsapi.org/v1/sources"
+  var articlesEndpoint         = "https://newsapi.org/v1/articles";
+  var sourceQuery              = '?source='
+  var newsFilter               = '&sortBy=top';
+  var apiKeyNewsQueryString    = '&apiKey=';
+  var queryString              = req.body.queryString
+  var NEWS_API_KEY             = process.env.NEWS_API_KEY;
+  var fullSourceQuery  = sourceEndpoint + sourceQuery + queryString + apiKeyNewsQueryString + NEWS_API_KEY;
+
+  console.log("fullSourceQuery:", fullSourceQuery); //prints to terminal
+
+  request({
+    url: fullSourceQuery,
+    method: 'GET',
+    callback: function(error, response, body) {
+      // console.log(body);
+      // console.log(response);
+      res.send(body);
+    }
+  }) //end request
+
+  request({
+    url: articlesEndpoint + sourceQuery + queryString + newsFilter + apiKeyNewsQueryString + NEWS_API_KEY,
+    method: 'GET',
+    callback: function(error, response, body) {
+      // console.log(body);
+      // console.log(response);
+      res.send(body);
+    }
+  })
+}); //end get for sources
 
 
-console.log("fullSourceQuery:", fullSourceQuery); //prints to terminal
-console.log("fullArticleQuery:", fullArticleQuery);
-
-app.get('/news/sources', function(req, response) {
-  var fullSourceQuery  = baseSourcesUrl + sourcePoint + chosenSource + apiKeyNewsQueryString + NEWS_API_KEY;
-
-
-} //end get for sources
-
-app.get('/news/sources', function(req, response){
-  var fullArticleQuery = baseArticlesUrl + sourcePoint + chosenSource + chosenSource + newsEndpoint = + apiKeyNewsQueryString + NEWS_API_KEY;
-
-}) //end get for articles
 
 
   /* tell our app where to listen */
