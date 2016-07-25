@@ -21,8 +21,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 var MongoClient = mongodb.MongoClient;
 
 /* Connection url where your mongodb server is running. */
-var mongoUrl = 'mongodb://localhost:27017/notes';
-// var mongoUrl = 'mongodb://heroku_8npb49rs:60kb260mr8jj6k1t94149u13ts@ds027175.mlab.com:27175/heroku_8npb49rs'
+// var mongoUrl = 'mongodb://localhost:27017/notes';
+var mongoUrl = 'mongodb://heroku_8npb49rs:60kb260mr8jj6k1t94149u13ts@ds027175.mlab.com:27175/heroku_8npb49rs'
 
 // // initiate Aylien
 // var textapi = new AYLIENTextAPI({
