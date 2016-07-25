@@ -9,6 +9,7 @@ var express       = require('express'),
     app           = express(),
     colors        = require('colors'),
     AYLIENTextAPI = require('aylien_textapi');
+    ObjectId = require('mongodb').ObjectId;
 
 /* adds the ability ajax to our server from anywhere! */
 app.use(cors());
@@ -100,8 +101,11 @@ app.post('/entries/new', function(request, response){
 
 
 /* delete */
-app.delete('/entries/', function(request, response) {
+app.delete('/entries/:id', function(request, response) {
+  // response.json({"description":"delete by name"});
 
+  console.log("request.body:", request.body);
+  console.log("request.params:", request.params);
 
   MongoClient.connect(mongoUrl, function (err, db) {
     var entriesCollection = db.collection('entries');
@@ -109,10 +113,10 @@ app.delete('/entries/', function(request, response) {
       console.log('Unable to connect to the mongoDB server. ERROR:', err);
     } else {
       // We are connected!
-      console.log('Deleting by name... ');
+      console.log('Deleting by id... ');
 
       /* Delete */
-      entriesCollection.remove(request.params, function(err, numOfRemovedDocs) {
+      entriesCollection.remove({_id: new ObjectId(request.body.idNum)}, function(err, numOfRemovedDocs) {
         console.log("numOfRemovedDocs:", numOfRemovedDocs);
         if(err) {
           console.log("error!", err);
@@ -130,13 +134,15 @@ app.delete('/entries/', function(request, response) {
             }
             db.close(function() {
               console.log( "database CLOSED");
-            }); //close db
-          }); //end entries
-        } //end else
-      }); //entries
-    } //end else
-  }); // end mongo connect
+            }); //end db function
+        }); // end find
+      }; //end else
+    }); // end remove
+  } //end else
+}); // end mongo connect
+
 }); // end delete
+
 /*************************Part 3 Weather ****************************/
 /* weather endpoint welcome page */
 app.get('/forecast', function(req, response) {
