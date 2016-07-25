@@ -1,5 +1,5 @@
-// var PORT          = process.env.PORT || 80
-var PORT          = process.env.PORT || 3000;
+var PORT          = process.env.PORT || 80
+// var PORT          = process.env.PORT || 3000;
 
 var express       = require('express'),
     cors          = require('cors'),
