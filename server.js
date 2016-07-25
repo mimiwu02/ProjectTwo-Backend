@@ -9,7 +9,7 @@ var express       = require('express'),
     app           = express(),
     colors        = require('colors'),
     AYLIENTextAPI = require('aylien_textapi');
-    ObjectId = require('mongodb').ObjectId;
+    ObjectId = require('mongodb').ObjectId;  //remove object by id: http://stackoverflow.com/questions/12901593/remove-record-by-id
 
 /* adds the ability ajax to our server from anywhere! */
 app.use(cors());
@@ -158,7 +158,7 @@ app.post('/forecast/search', function(req, res){
   http://api.openweathermap.org/data/2.5/weather?zip=11228&APPID=
   */
 
-  var baseUrl              = "http://api.openweathermap.org/data/2.5/weather";
+  var baseUrl              = "https://api.openweathermap.org/data/2.5/weather";
   var endpoint             = '?zip=';
   var apiKeyQueryString    = '&APPID=';
   var OPEN_WEATHER_API_KEY = process.env.OPEN_WEATHER_API_KEY;
