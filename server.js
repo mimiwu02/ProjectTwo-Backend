@@ -102,7 +102,7 @@ app.post('/entries/new', function(request, response){
 
 /* delete */
 app.delete('/entries/:id', function(request, response) {
-  // response.json({"description":"delete by name"});
+  // response.json({"description":"delete by id"});
 
   console.log("request.body:", request.body);
   console.log("request.params:", request.params);
@@ -143,6 +143,56 @@ app.delete('/entries/:id', function(request, response) {
 
 }); // end delete
 
+/* update */
+app.put('/entries/:id', function(request, response) {
+  // response.json({"description":"update by id"});
+  console.log("request.body", request.body);
+  console.log("request.params:", request.params);
+
+var old = {note: request.body.note};
+var updateTo = {note: request.body.updateTextBox}
+
+  MongoClient.connect(mongoUrl, function (err, db) {
+    var entriesCollection = db.collection('entries');
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. ERROR:', err);
+    } else {
+      // We are connected!
+      console.log('Updating by id... ');
+
+      entriesCollection.update(old,updateTo);
+
+//Credit: http://stackoverflow.com/questions/19804089/node-mongo-updating-a-record-requires-a-callback
+      // entriesCollection.update({ '_id' : new ObjectId(request.body.idNum) },
+      //  { $set: { 'content': idNumber} },
+      //  function (err, result) {
+      //     if (err) throw err;
+      //     console.log(result);
+      //  });
+
+
+      // Wait a sec then fetch the modified doc
+      setTimeout(function() {
+        entriesCollection.find(updateTo).toArray(function (err, result) {
+          if (err) {
+            console.log("ERROR!", err);
+            response.json("error");
+          } else if (result.length) {
+            console.log('Found:', result);
+            response.json(result);
+          } else { //
+            console.log('No document(s) found with defined "find" criteria');
+            response.json("none found");
+          }
+          db.close(function() {
+            console.log( "database CLOSED");
+          }); // end db close
+        }); // end find
+      }, 1000);
+    } // end else
+  }); // end mongo connect
+}); // end update
+
 /*************************Part 3 Weather ****************************/
 /* weather endpoint welcome page */
 app.get('/forecast', function(req, response) {
@@ -158,7 +208,7 @@ app.post('/forecast/search', function(req, res){
   http://api.openweathermap.org/data/2.5/weather?zip=11228&APPID=
   */
 
-  var baseUrl              = "https://api.openweathermap.org/data/2.5/weather";
+  var baseUrl              = "http://api.openweathermap.org/data/2.5/weather";
   var endpoint             = '?zip=';
   var apiKeyQueryString    = '&APPID=';
   var OPEN_WEATHER_API_KEY = process.env.OPEN_WEATHER_API_KEY;
